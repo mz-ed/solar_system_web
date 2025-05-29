@@ -1,23 +1,23 @@
 import * as THREE from 'three'
 import { color } from 'three/tsl'
-
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 
 export function createScene(container) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
-      105,
+      85,
       window.innerWidth / window.innerHeight,
       0.5,
       3000
   );
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: false });
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
 
   // Create cube
-  const cubegeo = new THREE.BoxGeometry(1, 1, 1);
-  const cubecol = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const cubegeo = new THREE.SphereGeometry(1, 16, 16);
+  const cubecol = new THREE.MeshBasicMaterial({ color: 0xffff00 });
   const cube = new THREE.Mesh(cubegeo, cubecol);
 
   // Shader Material
@@ -40,10 +40,11 @@ export function createScene(container) {
       side: THREE.DoubleSide,
   });
 
-  const geometry = new THREE.SphereGeometry(1, 64, 64);
+  const geometry = new THREE.SphereGeometry(1, 16, 16);
+
   const spheres = [
       new THREE.Mesh(geometry, material),
-      new THREE.Mesh(geometry, material),
+     // new THREE.Mesh(geometry, material),
       new THREE.Mesh(geometry, material),
       new THREE.Mesh(geometry, material),
       new THREE.Mesh(geometry, material),
@@ -55,7 +56,7 @@ export function createScene(container) {
   // Set sphere positions
   const positions = [
       [8.5, -2.5, -10.5],
-      [-5.5, -2.5, -0.5],
+      // [-5.5, -2.5, -0.5],
       [4.5, 0.5, -2.5],
       [2.5, 0.5, -7.5],
       [9.5, 0.5, -3.5],
@@ -83,7 +84,7 @@ export function createScene(container) {
 
   // Create orbital rings using RingGeometry
   function createOrbitRing(radius) {
-      const geometry = new THREE.RingGeometry(radius - 0.1, radius + 0.1, 64);
+      const geometry = new THREE.RingGeometry(radius - 0.05, radius + 0.05, 32);
       const material = new THREE.MeshBasicMaterial({ 
           color: 0xff0000, 
           side: THREE.DoubleSide,
@@ -103,24 +104,29 @@ export function createScene(container) {
       scene.add(ring);
   });
 
-  camera.position.set(1, 4, 10);
+  camera.position.set(1, 2, 10);
+  const stats = Stats();
+  document.body.appendChild(stats.dom);
 
   const animate = () => {
       requestAnimationFrame(animate);
       
       // Uncomment to enable animations
-      /*
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-      pivots[0].rotation.y += 0.01;
-      pivots[1].rotation.y += 0.008;
-      pivots[2].rotation.y += 0.006;
-      pivots[3].rotation.y += 0.005;
-      pivots[4].rotation.y += 0.007;
-      pivots[5].rotation.y += 0.004;
-      pivots[6].rotation.y += 0.009;
-      pivots[7].rotation.y += 0.005;
-      */
+      
+    //  cube.rotation.x += 0.01;
+    //  cube.rotation.y += 0.01;
+    //  pivots[0].rotation.y += 0.001; // Slowest
+    //  pivots[1].rotation.y += 0.0012;
+    //  pivots[2].rotation.y += 0.0009;
+     // pivots[3].rotation.y += 0.0015;
+     // pivots[4].rotation.y += 0.0011;
+     // pivots[5].rotation.y += 0.0008;
+    //  pivots[6].rotation.y += 0.0014;
+   //   pivots[7].rotation.y += 0.001;
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+      stats.update(); // shows FPS
+      
       
       renderer.render(scene, camera);
   };
@@ -133,5 +139,8 @@ export function createScene(container) {
       renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
+  
+ 
+  
   return { scene, camera, renderer, spheres };
 }
